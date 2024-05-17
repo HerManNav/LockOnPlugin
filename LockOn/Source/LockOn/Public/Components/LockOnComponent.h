@@ -98,7 +98,7 @@ protected:
 	bool bActivated = true;
 
 	UPROPERTY(EditDefaultsOnly, Category = "LockOn Properties")
-	bool bDrawDebug = true;
+	bool bDrawDebug = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "LockOn Properties")
 	float TraceLength = 1000.f;
