@@ -13,6 +13,8 @@ The default controls are:
 - F: Enable/Disable LockOn
 - Tab: Swap between targets
 
+The method ULockOnComponent::FaceCurrentControllerDirection() can be used separate from the LockOn logic to instantly face a LockOn components's owner to whichever direction its Controller is currently facing. Used together with GetCharacterMovement()->bOrientRotationToMovement = [false/true] (for temporary stop automatic character's rotation), can come in handy for Dodge or other directional animations.
+
 ## Demo
 
 https://github.com/HerManNav/LockOnPlugin/assets/2845892/b660eb77-4ab7-43ad-8470-56276d64d0fd
