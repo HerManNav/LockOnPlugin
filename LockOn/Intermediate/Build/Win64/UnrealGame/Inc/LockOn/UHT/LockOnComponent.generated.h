@@ -9,7 +9,6 @@
 #include "UObject/ScriptMacros.h"
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
-class ACharacter;
 class UCameraComponent;
 #ifdef LOCKON_LockOnComponent_generated_h
 #error "LockOnComponent.generated.h already included, missing '#pragma once' in LockOnComponent.h"

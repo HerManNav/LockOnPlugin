@@ -88,11 +88,10 @@ void EmptyLinkFunctionForGeneratedCodeLockOnComponent() {}
 	}
 	DEFINE_FUNCTION(ULockOnComponent::execInit)
 	{
-		P_GET_OBJECT(ACharacter,Z_Param_InOwner);
 		P_GET_OBJECT(UCameraComponent,Z_Param_Camera);
 		P_FINISH;
 		P_NATIVE_BEGIN;
-		P_THIS->Init(Z_Param_InOwner,Z_Param_Camera);
+		*(bool*)Z_Param__Result=P_THIS->Init(Z_Param_Camera);
 		P_NATIVE_END;
 	}
 	void ULockOnComponent::StaticRegisterNativesULockOnComponent()
@@ -236,35 +235,42 @@ void EmptyLinkFunctionForGeneratedCodeLockOnComponent() {}
 	{
 		struct LockOnComponent_eventInit_Parms
 		{
-			ACharacter* InOwner;
 			UCameraComponent* Camera;
+			bool ReturnValue;
 		};
-		static const UECodeGen_Private::FObjectPropertyParams NewProp_InOwner;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_Camera_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_Camera;
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
 #endif
 		static const UECodeGen_Private::FFunctionParams FuncParams;
 	};
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_InOwner = { "InOwner", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(LockOnComponent_eventInit_Parms, InOwner), Z_Construct_UClass_ACharacter_NoRegister, METADATA_PARAMS(0, nullptr) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_Camera_MetaData[] = {
 		{ "EditInline", "true" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_Camera = { "Camera", nullptr, (EPropertyFlags)0x0010000000080080, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(LockOnComponent_eventInit_Parms, Camera), Z_Construct_UClass_UCameraComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_Camera_MetaData), Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_Camera_MetaData) };
+	void Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((LockOnComponent_eventInit_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(LockOnComponent_eventInit_Parms), &Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_ULockOnComponent_Init_Statics::PropPointers[] = {
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_InOwner,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_Camera,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_ULockOnComponent_Init_Statics::NewProp_ReturnValue,
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_ULockOnComponent_Init_Statics::Function_MetaDataParams[] = {
 		{ "Category", "LockOnPlugin" },
+		{ "Comment", "/*ACharacter* InOwner,*/" },
 		{ "ModuleRelativePath", "Public/Components/LockOnComponent.h" },
+		{ "ToolTip", "ACharacter* InOwner," },
 	};
 #endif
 	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_ULockOnComponent_Init_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_ULockOnComponent, nullptr, "Init", nullptr, nullptr, Z_Construct_UFunction_ULockOnComponent_Init_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_ULockOnComponent_Init_Statics::PropPointers), sizeof(Z_Construct_UFunction_ULockOnComponent_Init_Statics::LockOnComponent_eventInit_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_ULockOnComponent_Init_Statics::Function_MetaDataParams), Z_Construct_UFunction_ULockOnComponent_Init_Statics::Function_MetaDataParams) };
@@ -514,7 +520,7 @@ void EmptyLinkFunctionForGeneratedCodeLockOnComponent() {}
 		{ &Z_Construct_UFunction_ULockOnComponent_Enable, "Enable" }, // 4042793247
 		{ &Z_Construct_UFunction_ULockOnComponent_FaceCurrentControllerDirection, "FaceCurrentControllerDirection" }, // 14432299
 		{ &Z_Construct_UFunction_ULockOnComponent_GetMovementDirection, "GetMovementDirection" }, // 850116656
-		{ &Z_Construct_UFunction_ULockOnComponent_Init, "Init" }, // 1203222074
+		{ &Z_Construct_UFunction_ULockOnComponent_Init, "Init" }, // 26064187
 		{ &Z_Construct_UFunction_ULockOnComponent_LerpRotationToFaceEnemy, "LerpRotationToFaceEnemy" }, // 3901014619
 		{ &Z_Construct_UFunction_ULockOnComponent_Pause, "Pause" }, // 1632125499
 		{ &Z_Construct_UFunction_ULockOnComponent_Resume, "Resume" }, // 967159776
@@ -718,9 +724,9 @@ void EmptyLinkFunctionForGeneratedCodeLockOnComponent() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Projects_LockOnPlugin_LockOn_HostProject_Plugins_LockOn_Source_LockOn_Public_Components_LockOnComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ULockOnComponent, ULockOnComponent::StaticClass, TEXT("ULockOnComponent"), &Z_Registration_Info_UClass_ULockOnComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ULockOnComponent), 3319064095U) },
+		{ Z_Construct_UClass_ULockOnComponent, ULockOnComponent::StaticClass, TEXT("ULockOnComponent"), &Z_Registration_Info_UClass_ULockOnComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ULockOnComponent), 362841741U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Projects_LockOnPlugin_LockOn_HostProject_Plugins_LockOn_Source_LockOn_Public_Components_LockOnComponent_h_525259109(TEXT("/Script/LockOn"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Projects_LockOnPlugin_LockOn_HostProject_Plugins_LockOn_Source_LockOn_Public_Components_LockOnComponent_h_2978258819(TEXT("/Script/LockOn"),
 		Z_CompiledInDeferFile_FID_Unreal_Projects_LockOnPlugin_LockOn_HostProject_Plugins_LockOn_Source_LockOn_Public_Components_LockOnComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Unreal_Projects_LockOnPlugin_LockOn_HostProject_Plugins_LockOn_Source_LockOn_Public_Components_LockOnComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

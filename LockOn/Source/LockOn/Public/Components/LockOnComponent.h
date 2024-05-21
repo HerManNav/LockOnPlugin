@@ -23,8 +23,9 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	/** Returns true if LockOn component has been initialized properly, false otherwise */
 	UFUNCTION(BlueprintCallable, Category = "LockOnPlugin")
-	void Init(ACharacter* InOwner, UCameraComponent* Camera);
+	bool Init(/*ACharacter* InOwner,*/ UCameraComponent* Camera);
 
 	/** Returns the number of found targets */
 	UFUNCTION(BlueprintCallable, Category = "LockOnPlugin")
@@ -66,7 +67,7 @@ protected:
 
 	int16 SelectNextIndex();
 
-	bool IsLockOnActive();
+	bool IsLockOnActiveAndValid();
 
 	float GetDistanceToTarget(const AActor* Target);
 	FRotator GetFocusToTargetRotation();

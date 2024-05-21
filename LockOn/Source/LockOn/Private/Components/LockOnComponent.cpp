@@ -33,19 +33,27 @@ void ULockOnComponent::BeginPlay()
 	RotationTimeline.AddInterpFloat(TimelineCurve, InterpFunction);
 }
 
-void ULockOnComponent::Init(ACharacter* InOwner, UCameraComponent* Camera)
+bool ULockOnComponent::Init(/*ACharacter* InOwner,*/ UCameraComponent* Camera)
 {
-	Owner = InOwner;
 	ViewCamera = Camera;
 
-	ControlledActor = Cast<AActor>(Owner->GetController());
+	Owner = Cast<ACharacter>(GetOwner());
+	if (Owner)
+		ControlledActor = Cast<AActor>(Owner->GetController());
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[LockOn] Owner is not an ACharacter, unable to initilize LockOn component."));
+		return false;
+	}
+	return true;
 }
 
 /** Enable */
 
 int32 ULockOnComponent::Enable()
 {
-	if (!bActivated) return 0;
+	if (!bActivated || 
+		!Owner || !ViewCamera) return 0;
 
 	GetLockOnTargets(Targets);
 	if (Targets.Num() > 0)
@@ -68,6 +76,8 @@ void ULockOnComponent::GetLockOnTargets(TArray<AActor*>& InTargets)
 
 void ULockOnComponent::GetHitsToPawnsInFront(TArray<FHitResult>& OutPawnHits)
 {
+	if (!Owner || !ViewCamera) return;
+
 	FVector OwnerLocation = Owner->GetActorLocation();
 
 	FVector TraceStart = OwnerLocation;
@@ -94,6 +104,8 @@ void ULockOnComponent::GetHitsToPawnsInFront(TArray<FHitResult>& OutPawnHits)
 
 void ULockOnComponent::GetVisibleImpactedActors(TArray<AActor*>& OutVisiblePawns, const TArray<FHitResult>& PawnHits)
 {
+	if (!ViewCamera) return;
+
 	for (FHitResult PawnHit : PawnHits)
 	{
 		FHitResult HitResult;
@@ -154,7 +166,7 @@ void ULockOnComponent::HideLockOnWidgetOnActor(AActor* Actor)
 
 void ULockOnComponent::SwitchTarget()
 {
-	if (!IsLockOnActive()) return;
+	if (!IsLockOnActiveAndValid()) return;
 
 	HideLockOnWidgetOnActor(CurrentTarget);
 
@@ -165,14 +177,14 @@ void ULockOnComponent::SwitchTarget()
 
 int16 ULockOnComponent::SelectNextIndex()
 {
-	return (CurrentTargetIndex + 1) % Targets.Num();
+	return Targets.Num() > 0 ? (CurrentTargetIndex + 1) % Targets.Num() : -1;
 }
 
 /** Tick */
 
 void ULockOnComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	if (!IsLockOnActive()) return;
+	if (!IsLockOnActiveAndValid()) return;
 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -199,7 +211,8 @@ float ULockOnComponent::GetDistanceToTarget(const AActor* Target)
 
 FRotator ULockOnComponent::GetFocusToTargetRotation()
 {
-	if (!CameraTiltCurve || !CameraRightDisplacementCurve) return FRotator();
+	if (!CameraTiltCurve || !CameraRightDisplacementCurve ||
+		!Owner || !ViewCamera || !CurrentTarget) return FRotator();
 
 	FVector OwnerLocation = Owner->GetActorLocation();
 
@@ -220,6 +233,8 @@ void ULockOnComponent::LerpRotationToFaceEnemy(float Alpha)
 
 void ULockOnComponent::LerpControllerRotation(float Alpha)
 {
+	if (!Owner ||!ControlledActor) return;
+
 	FRotator CurrentControllerRotation = ControlledActor->GetActorRotation();
 	FRotator FocusToTargetRotation_ForLerp = FocusToTargetRotation;
 	FRotator ControllerLerpedRotation = UKismetMathLibrary::RLerp(CurrentControllerRotation, FocusToTargetRotation_ForLerp, Alpha, false);
@@ -229,6 +244,8 @@ void ULockOnComponent::LerpControllerRotation(float Alpha)
 
 void ULockOnComponent::LerpCharacterYawRotation(float Alpha)
 {
+	if (!Owner) return;
+
 	FRotator OwnerRotation = FRotator(0.f, Owner->GetActorRotation().Yaw, 0.f);
 	FRotator FocusToTargetRotation_ForLerp = FRotator(0.f, FocusToTargetRotation.Yaw, 0.f);
 	FRotator OwnerLerpedRotation = UKismetMathLibrary::RLerp(OwnerRotation, FocusToTargetRotation_ForLerp, Alpha, false);
@@ -238,7 +255,7 @@ void ULockOnComponent::LerpCharacterYawRotation(float Alpha)
 
 /** General methods */
 
-bool ULockOnComponent::IsLockOnActive()
+bool ULockOnComponent::IsLockOnActiveAndValid()
 {
 	return bActivated && Targets.Num() > 0;
 }
@@ -261,8 +278,10 @@ void ULockOnComponent::Resume()
 
 void ULockOnComponent::FaceCurrentControllerDirection()
 {
+	if (!Owner || !ViewCamera) return;
+
 	FVector CameraForward = ViewCamera->GetForwardVector().GetSafeNormal2D();
-	FVector ActorForward = GetOwner()->GetActorForwardVector().GetSafeNormal2D();
+	FVector ActorForward = Owner->GetActorForwardVector().GetSafeNormal2D();
 
 	float ActorFacingDirection = UKismetMathLibrary::DegAcos(FVector::DotProduct(CameraForward, ActorForward));
 	float RightOrLeft = FVector::CrossProduct(CameraForward, ActorForward).Z > 0 ? 1.f : -1.f;
